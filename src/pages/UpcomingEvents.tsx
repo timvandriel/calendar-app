@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonButton } from '@ionic/react';
+import {
+    IonIcon, IonItemOptions, IonItemOption, IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel,
+    IonButton, IonButtons, IonItemSliding
+} from '@ionic/react';
 import { sampleEvents } from '../data/mockData';
+import { calendarOutline, add } from 'ionicons/icons';
 
 interface Event {
     id: string;
@@ -54,13 +58,27 @@ const UpcomingEvents: React.FC = () => {
         }
     };
 
+    const handleDelete = (id: string) => {
+        setEvents(events.filter(event => event.id !== id));
+    };
+
     console.log("Events state:", events);
 
     return (
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonTitle>Upcoming Events</IonTitle>
+                    <IonButtons slot="start">
+                        <IonButton routerLink="/calendar">
+                            <IonIcon icon={calendarOutline} />
+                        </IonButton>
+                    </IonButtons>
+                    <IonTitle style={{ textAlign: 'center', flex: 1 }}>Upcoming</IonTitle>
+                    <IonButtons slot="end">
+                        <IonButton routerLink="/add-event" color="primary">
+                            <IonIcon icon={add} />
+                        </IonButton>
+                    </IonButtons>
                 </IonToolbar>
             </IonHeader>
             <IonContent>
@@ -74,14 +92,40 @@ const UpcomingEvents: React.FC = () => {
                             <div className="ion-padding">No events available</div>
                         ) : (
                             events.map((event) => (
-                                <IonItem key={event.id}>
-                                    <IonLabel>
-                                        <h2>{event.title}</h2>
-                                        <p>{formatDate(event.date)}</p>
-                                        <p>{event.description}</p>
-                                    </IonLabel>
-                                    <IonButton routerLink={`/event-detail/${event.id}`} color="primary">View</IonButton>
-                                </IonItem>
+                                <IonItemSliding key={event.id}>
+                                    <IonItem button routerLink={`/event-detail/${event.id}`}>
+                                        <IonLabel>
+                                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                {/* Circle representing urgency */}
+                                                <div
+                                                    style={{
+                                                        width: '10px',
+                                                        height: '10px',
+                                                        borderRadius: '50%',
+                                                        backgroundColor:
+                                                            event.urgency === 3 ? '#28a745' :  // Green for low urgency
+                                                                event.urgency === 2 ? '#ffc107' :  // Yellow for medium urgency
+                                                                    event.urgency === 1 ? '#dc3545' :  // Red for high urgency
+                                                                        '#6c757d', // Default gray
+                                                        marginRight: '10px'
+                                                    }}
+                                                />
+                                                <h2>{event.title}</h2>
+                                            </div>
+                                            <p>{formatDate(event.date)}</p>
+                                            <p>{event.description}</p>
+                                        </IonLabel>
+                                    </IonItem>
+
+                                    <IonItemOptions side="end">
+                                        <IonItemOption color="warning" routerLink={`/edit-event/${event.id}`}>
+                                            Edit
+                                        </IonItemOption>
+                                        <IonItemOption color="danger" onClick={() => handleDelete(event.id)}>
+                                            Delete
+                                        </IonItemOption>
+                                    </IonItemOptions>
+                                </IonItemSliding>
                             ))
                         )}
                     </IonList>

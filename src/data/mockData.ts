@@ -1,5 +1,19 @@
 // src/data/mockData.ts
-
+export interface Event {
+    id: string;
+    title: string;
+    date: Date;
+    start_time: Date;
+    end_time: Date;
+    location: string;
+    description: string;
+    urgency: number;
+    color: string;
+    reminder: {
+        push_notification: boolean;
+        reminder_time: number;
+    };
+}
 export const sampleEvents = [
     {
         id: "1",
@@ -9,8 +23,8 @@ export const sampleEvents = [
         end_time: new Date("2025-03-01T11:00:00Z"),
         location: "New York",
         description: "Sample event 1 description.",
-        urgency: 5,
-        color: "#FF5733",
+        urgency: 3,
+        color: "#33FF57",
         reminder: {
             push_notification: true,
             reminder_time: 30, // reminder 30 minutes before the event
@@ -24,8 +38,8 @@ export const sampleEvents = [
         end_time: new Date("2025-03-02T14:00:00Z"),
         location: "San Francisco",
         description: "Sample event 2 description.",
-        urgency: 7,
-        color: "#33FF57",
+        urgency: 1,
+        color: "#FF5733",
         reminder: {
             push_notification: false,
             reminder_time: 60, // reminder 60 minutes before the event
